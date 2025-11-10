@@ -1,0 +1,211 @@
+:root{
+  --bg-1: #071226; /* deep navy */
+  --bg-2: #071a2b;
+  --card: rgba(255,255,255,0.04);
+  --accent-1: #7bd389; /* mint */
+  --accent-2: #6ad1ff; /* sky */
+  --muted: #9aa6b2;
+  --glass: rgba(255,255,255,0.04);
+  --radius:16px;
+  --maxw:1100px;
+}
+/* warm theme variables (applied with .theme-warm on body) */
+body.theme-warm{
+  --accent-1: #ffb37e; /* warm coral */
+  --accent-2: #ff88c2; /* pink */
+  --bg-1: #0b1220;
+  --bg-2: #24121a;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Poppins, Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;background-color:var(--bg-1);color:#e6eef6;}
+
+/* layered animated background: ::before for subtle color gradient shifts, ::after for moving soft blobs + texture */
+body.theme-warm::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  /* disabled: single-color background requested */
+  display:none !important;
+}
+
+body.theme-warm::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  pointer-events:none;
+  /* disabled: single-color background requested */
+  display:none !important;
+}
+
+@keyframes bgTint{
+  0%{ transform: translateY(0px) scale(1); filter: blur(24px) hue-rotate(0deg); }
+  50%{ transform: translateY(-8px) scale(1.02); filter: blur(28px) hue-rotate(6deg); }
+  100%{ transform: translateY(0px) scale(1); filter: blur(24px) hue-rotate(-4deg); }
+}
+
+@keyframes blobFloat{
+  0%{ transform: translate3d(0,0,0) scale(1); }
+  25%{ transform: translate3d(-6px,-8px,0) scale(1.03); }
+  50%{ transform: translate3d(0,-14px,0) scale(1.06); }
+  75%{ transform: translate3d(6px,-8px,0) scale(1.03); }
+  100%{ transform: translate3d(0,0,0) scale(1); }
+}
+
+/* respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce){
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  .profile-photo, .hero-blob, body::before, body::after { animation: none !important; transform: none !important; }
+  .card:hover{transform:none;box-shadow:0 8px 30px rgba(3,6,10,0.5)}
+}
+
+/* optional subtle vignette to focus center */
+body:focus-within::before, body:focus-within::after { opacity:1 }
+
+/* low-cost grain texture alternative for devices: tiny repeating pattern (keeps file-size 0) */
+.container::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background-image: radial-gradient(rgba(255,255,255,0.002) 1px, transparent 1px);
+  background-size:6px 6px;
+  mix-blend-mode:overlay;
+  opacity:0.9;
+}
+
+/* animated soft movement */
+@keyframes floaty { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+
+.container{max-width:var(--maxw);margin: -48px auto 60px;padding:28px}
+.hero{padding:56px 20px 20px}
+.hero-inner{display:flex;gap:22px;align-items:center;max-width:var(--maxw);margin:0 auto}
+.hero{position:relative;overflow:visible}
+.hero-blob{display:none !important}
+.profile-photo{width:150px;height:150px;object-fit:cover;border-radius:999px;border:4px solid rgba(255,255,255,0.06);box-shadow:0 12px 40px rgba(6,12,20,0.7);transition:transform .45s var(--ease, cubic-bezier(.2,.9,.2,1));animation:floaty 6s ease-in-out infinite}
+.profile-photo:hover{transform:translateY(-6px) scale(1.02)}
+.hero-text h1{margin:0;font-size:30px;letter-spacing:0.2px}
+.sub{color:var(--accent-1);margin-top:6px;font-weight:600}
+.lead{margin-top:8px;font-size:0.98rem}
+.contact-row{display:flex;gap:14px;align-items:center;margin-top:12px}
+.contact{margin:0;color:var(--muted);font-size:0.95rem}
+.contact a{color:var(--muted);text-decoration:none}
+.contact .sep{margin:0 10px;color:var(--muted)}
+.location{font-size:0.95rem}
+.muted{color:var(--muted)}
+.small{font-size:0.9rem}
+
+.socials{display:flex;gap:10px;align-items:center}
+.socials a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);color:var(--accent-2);transition:all .22s ease}
+.socials a:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 8px 20px rgba(12,22,40,0.6)}
+
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter: blur(6px);border-radius:var(--radius);padding:20px;margin:18px 0;box-shadow:0 10px 40px rgba(3,6,10,0.6);border:1px solid rgba(255,255,255,0.03)}
+.card:hover{transform:translateY(-6px);transition:transform .28s cubic-bezier(.2,.9,.2,1);box-shadow:0 18px 50px rgba(6,14,30,0.6)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.job{margin:12px 0}
+.job h3{margin:6px 0}
+.project{margin:10px 0}
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:18px}
+ul{margin:8px 0 0 18px}
+@media (max-width:920px){
+  .hero-inner{flex-direction:column;align-items:flex-start}
+  .grid{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+  .profile-photo{width:120px;height:120px}
+}
+
+/* Mobile specific improvements for touch and layout */
+@media (max-width:600px){
+  :root{--maxw:900px}
+  html,body{font-size:16px}
+  .container{margin:0 auto 40px;padding:18px}
+  .hero{padding:36px 16px 12px}
+  .hero-inner{flex-direction:column;align-items:center;gap:14px}
+  .hero-text{align-items:center;text-align:center}
+  .profile-photo{width:110px;height:110px}
+  .hero-text h1{font-size:22px}
+  .sub{font-size:0.95rem}
+  .lead{font-size:0.9rem}
+  .contact-row{flex-direction:column;align-items:center;gap:10px;margin-top:12px}
+  .contact-item{width:100%;justify-content:center;padding:12px 14px;border-radius:12px;font-size:1rem}
+  .contact-item .contact-text{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 40px)}
+  .btn{display:block;width:100%;padding:12px 16px;border-radius:12px;font-size:1rem;margin-top:8px}
+  .card{padding:16px}
+  .grid{grid-template-columns:1fr}
+  .container::before{background-size:8px 8px}
+  .job h3{font-size:1rem}
+}
+
+/* compact header: icon-only contact items for very small screens */
+@media (max-width:420px){
+  .contact-text{display:none}
+  .contact-item{padding:8px;border-radius:10px;width:auto}
+  .ci{width:22px;height:22px}
+  .hero-text h1{font-size:20px}
+  .lead{display:none}
+}
+
+/* Print styles: produce clean PDF/resume output */
+@media print{
+  /* Use white background for printing */
+  html,body{background:#ffffff;color:#000000}
+  /* Hide decorative elements */
+  .hero-blob, body::before, body::after, .profile-photo{box-shadow:none;border:none}
+  .profile-photo{border-radius:0;margin-bottom:8px}
+  /* Make cards simple */
+  .card{background:transparent;box-shadow:none;border:0;padding:0 0 8px}
+  header, main{width:100%;}
+  .contact-item{background:transparent;border:0;color:#000}
+  a{color:#000;text-decoration:underline}
+  .btn, .btn.secondary{display:none}
+  /* keep content readable */
+  body{font-size:12pt;line-height:1.35}
+}
+
+/* Call-to-action button */
+.btn{display:inline-block;padding:10px 16px;border-radius:12px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#07202a;font-weight:600;text-decoration:none;box-shadow:0 8px 30px rgba(122,209,201,0.12);border:none}
+.btn:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(106,209,255,0.12)}
+
+.hero-cta{margin-top:12px}
+
+/* secondary button style (print) */
+.btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--muted);margin-right:10px;box-shadow:none}
+.btn.secondary:hover{color:#fff;border-color:rgba(255,255,255,0.14);transform:translateY(-3px)}
+
+/* subtle section intro styling */
+.card h2 small{display:block;font-size:0.78rem;color:var(--muted);margin-top:6px}
+
+/* improved readable line-height for lists */
+ul{line-height:1.5}
+
+/* contact item styles (icon + text) */
+.contact-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.contact-item{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);color:var(--muted);text-decoration:none;font-weight:500;font-size:0.95rem}
+.contact-item .ci{color:var(--accent-1);flex:0 0 auto}
+.contact-item .contact-text{color:var(--muted)}
+.contact-item:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(6,12,20,0.5);color:#fff}
+
+/* subtle hero-blob motion */
+@keyframes blobMove { 0%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-8px) rotate(6deg);} 100%{transform:translateY(0) rotate(0);} }
+.hero-blob{animation:blobMove 8s ease-in-out infinite}
+
+/* small utility */
+code{background:var(--glass);padding:4px 8px;border-radius:6px;color:var(--muted)}
+
+/* subtle accent underline for headings */
+.card h2{position:relative;padding-bottom:8px}
+.card h2:after{content:'';position:absolute;left:0;bottom:0;height:4px;width:54px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));border-radius:6px}
+
+/* outline accent for avatar */
+.profile-photo{outline:3px solid rgba(123,211,137,0.04)}
+
+/* minor heading styles for sections */
+h2{font-size:1.15rem;margin:0 0 8px 0}
+
+/* make links slightly brighter on hover */
+a:hover{color:#ffffff}
